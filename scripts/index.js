@@ -5,13 +5,26 @@ const loadLessons = () => {
 };
 
 
+const removeActive = () => {
+    const lessonButtons = document.querySelectorAll(".lesson-btn");
+    // console.log(lessonButtons);
+    lessonButtons.forEach((btn) => btn.classList.remove("active"));
+}
+
+
 const loadLevelWord = (id) => {
     // console.log(id);
     const url = `https://openapi.programming-hero.com/api/level/${id}`;
     // console.log(url);
     fetch(url)
         .then((res) => res.json())
-        .then((data) => displayLevelWord(data.data));
+        .then((data) => {
+            removeActive();    // remove all active class styles
+            const clickBtn = document.getElementById(`lesson-btn-${id}`);
+            // console.log(clickBtn);
+            clickBtn.classList.add("active"); // add active class style
+            displayLevelWord(data.data)
+        });
 }
 
 
@@ -26,7 +39,7 @@ const displayLevelWord = (words) => {
         // alert("No word detected");
 
         wordContainer.innerHTML = `
-        <div class="text-center col-span-full space-y-6">
+            <div class="text-center col-span-full space-y-6">
 
             <img class="mx-auto" src="./assets/alert-error.png"/>
 
@@ -62,7 +75,7 @@ const displayLevelWord = (words) => {
             <div class="font-bangla text-2xl font-medium">"${word.meaning ? word.meaning : "অর্থ পাওয়া যায়নি"} / ${word.pronunciation ? word.pronunciation : "pronunciation পাওয়া যায়নি"}"</div>
 
             <div class="flex justify-between items-center ">
-                <button class="btn bg-[#1A91FF10] hover:bg-[#1A91FF80]"><i class="fa-solid fa-circle-info"></i></button>
+                <button onclick="my_modal_5.showModal()" class="btn bg-[#1A91FF10] hover:bg-[#1A91FF80]"><i class="fa-solid fa-circle-info"></i></button>
                 <button class="btn bg-[#1A91FF10] hover:bg-[#1A91FF80]"><i class="fa-solid fa-volume-high"></i></button>
             </div>
         </div>
@@ -85,7 +98,7 @@ const displayLesson = (lessons) => {
         // 3. create element 
         const btnDiv = document.createElement("div");
         btnDiv.innerHTML = `
-                   <button onclick = "loadLevelWord(${lesson.level_no})" class="btn btn-outline btn-primary">
+                   <button id="lesson-btn-${lesson.level_no}" onclick = "loadLevelWord(${lesson.level_no})" class="btn btn-outline btn-primary lesson-btn">
                          <i class="fa-solid fa-book-open"></i> Lesson - ${lesson.level_no}
                    </button>
         `;
