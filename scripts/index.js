@@ -1,3 +1,21 @@
+const createElements = (arr) => {
+    const htmlElements = arr.map((el) => `<span class="btn">${el}</span>`);
+    return (htmlElements.join(" "));
+}
+
+const manageSpinner = (status) => {
+    if (status == true) {
+        document.getElementById("spinner").classList.remove("hidden");
+        document.getElementById("word-container").classList.add("hidden");
+    }
+    else {
+        document.getElementById("word-container").classList.remove("hidden");
+        document.getElementById("spinner").classList.add("hidden");
+    }
+};
+
+
+
 const loadLessons = () => {
     fetch("https://openapi.programming-hero.com/api/levels/all")   //promise of response
         .then((res) => res.json())          //promise of json data
@@ -14,6 +32,7 @@ const removeActive = () => {
 
 const loadLevelWord = (id) => {
     // console.log(id);
+    manageSpinner(true);
     const url = `https://openapi.programming-hero.com/api/level/${id}`;
     // console.log(url);
     fetch(url)
@@ -25,7 +44,7 @@ const loadLevelWord = (id) => {
             clickBtn.classList.add("active"); // add active class style
             displayLevelWord(data.data)
         });
-}
+};
 
 
 
@@ -74,9 +93,7 @@ const displayWordDetails = (word) => {
                 </div>
                 <div class="">
                     <h2 class="font-bold">সমার্থক শব্দ গুলো</h2>
-                    <span class="btn">Enthusiastic</span>
-                    <span class="btn">excited</span>
-                    <span class="btn">keen</span>
+                    <div class="">${createElements(word.synonyms)}</div>
                 </div>
     
     `;
@@ -104,7 +121,7 @@ const displayLevelWord = (words) => {
         </div>
 
         `;
-
+        manageSpinner(false);
         return;
     }
 
@@ -140,7 +157,8 @@ const displayLevelWord = (words) => {
         // 4. append to the container  
         wordContainer.append(card)
     });
-}
+    manageSpinner(false);
+};
 
 const displayLesson = (lessons) => {
     // console.log(lessons)
@@ -163,6 +181,6 @@ const displayLesson = (lessons) => {
         levelContainer.append(btnDiv);
     };
 
+};
 
-}
 loadLessons();
